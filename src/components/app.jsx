@@ -10,6 +10,7 @@ export default class App extends Component{
         searchName: '',
     }
 
+    // 从 search 模块中获取搜索值，传递给 main 模块
     getSearchName = (searchName) => {
         this.setState({searchName});
     }

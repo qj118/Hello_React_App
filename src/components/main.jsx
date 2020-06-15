@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import axios from "axios";
 
 export default class Main extends Component{
 
@@ -12,6 +13,36 @@ export default class Main extends Component{
 
     static propTypes = {
         searchName: PropTypes.string.isRequired,
+    }
+
+    componentWillReceiveProps(newProps){
+        const { searchName } = newProps;
+        this.setState({
+            initView: false,
+            loading: true,
+        });
+        // 发送 ajax 请求
+        const requestUrl = `https://api.github.com/search/users?q=${searchName}`;
+        axios.get(requestUrl)
+            .then(res => {
+                const result = res.data;
+                //console.log(result); // 用于查看结果结构
+                const users = result.items.map(item => {
+                    return ({
+                        name: item.login,
+                        url: item.html_url,
+                        avatarUrl: item.avatar_url,
+                    });
+                }) // 减少返回的数据量
+                this.setState({loading:false, users});
+
+            })
+            .catch(error => {
+                this.setState({
+                    loading: false,
+                    errorMsg: error.message
+                });
+            })
     }
 
     render(){
@@ -31,7 +62,7 @@ export default class Main extends Component{
                     {
                         users.map((user, index) => {
                             return (
-                                <div className="card">
+                                <div className="card" key={index}>
                                     <a href={user.url} target="_blank">
                                         <img src={user.avatarUrl} style={{width: 100}}/>
                                     </a>
