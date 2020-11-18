@@ -12,7 +12,7 @@ export default class CommentList extends Component{
     }
 
     render(){
-        const {comments, deleteComment} = this.props;
+        const {comments} = this.props;
         const display = comments.length === 0? "block":"none";
         return (
             <div className="col-md-8">
